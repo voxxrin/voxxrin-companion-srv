@@ -1,5 +1,3 @@
-<img src="https://cdn.rawgit.com/voxxrin/static/master/images/voxxrin.png" width="100px"/>
-
 # Voxxrin Companion - Server
 
 Your conference companion !
