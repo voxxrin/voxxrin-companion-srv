@@ -1,30 +1,16 @@
 package voxxrin.companion.persistence;
 
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimaps;
-import com.google.common.math.DoubleMath;
+import com.google.common.collect.*;
 import restx.factory.Component;
-import voxxrin.companion.domain.*;
-import voxxrin.companion.domain.technical.Reference;
 import voxxrin.companion.domain.*;
 import voxxrin.companion.domain.technical.Reference;
 import voxxrin.companion.rest.PresentationsResource;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Component
 public class EventStatsService {
-
-    private static final Function<HasPresentationRef, String> HAS_PRESENTATION_REF_INDEXER = new Function<HasPresentationRef, String>() {
-        @Override
-        public String apply(HasPresentationRef input) {
-            return input.getPresentationRef();
-        }
-    };
 
     private final PresentationsDataService presentationsDataService;
     private final PresentationsResource presentationsResource;
@@ -62,7 +48,6 @@ public class EventStatsService {
         EventStats eventStats = new EventStats();
         List<Subscription> reminders = Lists.newArrayList(remindersService.getReminders(event));
         List<Subscription> favorites = Lists.newArrayList(favoritesService.getFavorites(event));
-        List<Rating> ratings = Lists.newArrayList(ratingService.findEventRatings(event.getEventId()));
 
         ArrayList<Presentation> presentations = Lists.newArrayList(presentationsResource.getEventPresentations(event.getKey()));
 
@@ -75,10 +60,8 @@ public class EventStatsService {
                 .setUsersWithFavoritesCount(usersWithSubscriptionCount(favorites))
                 .setUsersWithRemindersCount(usersWithSubscriptionCount(reminders))
                 .setRemindersCount(reminders.size())
-                .setRatingsCount(ratings.size())
-                .setRatingsAvg(computeAvg(ratings))
+                .setTopRatings(computeTopRating(event))
                 .setTopFavoritedPresentation(topOccurence(favorites))
-                .setTopRatedPresentation(topOccurence(ratings))
                 .setTopRemindedPresentation(topOccurence(reminders));
     }
 
@@ -101,25 +84,14 @@ public class EventStatsService {
         return speakers.size();
     }
 
-    private BigDecimal computeAvg(List<Rating> ratings) {
-
-        if (ratings.size() == 0) {
-            return BigDecimal.ZERO;
-        }
-
-        FluentIterable<Integer> rates = FluentIterable.from(ratings).transform(new Function<Rating, Integer>() {
-            @Override
-            public Integer apply(Rating input) {
-                return input.getRate();
-            }
-        });
-
-        return BigDecimal.valueOf(DoubleMath.mean(rates.toList()));
-    }
-
     private <T extends HasPresentationRef> Presentation topOccurence(List<T> elts) {
 
-        ImmutableListMultimap<String, T> indexedElts = Multimaps.index(elts, HAS_PRESENTATION_REF_INDEXER);
+        ImmutableListMultimap<String, T> indexedElts = Multimaps.index(elts, new Function<HasPresentationRef, String>() {
+            @Override
+            public String apply(HasPresentationRef input) {
+                return input.getPresentationRef();
+            }
+        });
 
         int max = 0;
         String presentationRef = null;
@@ -136,5 +108,32 @@ public class EventStatsService {
         }
 
         return null;
+    }
+
+    private Map<String, Presentation> computeTopRating(Event event) {
+
+        List<RatingItem> ratingItems = Lists.newArrayList(ratingService.findAllAvailableItems());
+        Map<String, Presentation> presentations = new HashMap<>();
+
+        for (final RatingItem ratingItem : ratingItems) {
+            ImmutableSet<String> presentationRefs = FluentIterable
+                    .from(ratingService.findEventRatings(event.getEventId(), ratingItem.getKey()))
+                    .transform(new Function<Rating, String>() {
+                        @Override
+                        public String apply(Rating input) {
+                            return input.getPresentationRef();
+                        }
+                    })
+                    .toSet();
+            LinkedHashMultiset<String> objects = LinkedHashMultiset.create(presentationRefs);
+            String maxOccuredPresentationRef = Iterables.getFirst(Multisets.copyHighestCountFirst(objects), null);
+            Presentation presentation = null;
+            if (maxOccuredPresentationRef != null) {
+                presentation = presentationsDataService.findByRef(maxOccuredPresentationRef);
+            }
+            presentations.put(ratingItem.getKey(), presentation);
+        }
+
+        return presentations;
     }
 }

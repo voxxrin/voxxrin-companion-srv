@@ -12,7 +12,7 @@ import restx.server.WebServer;
 public class AppServer {
 
     public static final String WEB_INF_LOCATION = "src/main/webapp/WEB-INF/web.xml";
-    public static final String WEB_APP_LOCATION = "../mobile/www";
+    public static final String WEB_APP_LOCATION = "src/main/webapp";
 
     public static void main(String[] args) throws Exception {
 

@@ -2,6 +2,9 @@ package voxxrin.companion.domain;
 
 import org.joda.time.DateTime;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 public class Rating implements HasPresentationRef<Rating> {
 
     public static final String COLLECTION = "rating";
@@ -10,44 +13,44 @@ public class Rating implements HasPresentationRef<Rating> {
 
     private String presentationRef;
 
-    private int rate;
+    private Set<RatingItem> ratingItems = new TreeSet<>();
 
     private DateTime dateTime;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public Rating setUserId(String userId) {
+        this.userId = userId;
+        return this;
+    }
 
     @Override
     public String getPresentationRef() {
         return presentationRef;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public Rating setUserId(final String userId) {
-        this.userId = userId;
+    @Override
+    public Rating setPresentationRef(String presentationRef) {
+        this.presentationRef = presentationRef;
         return this;
     }
 
-    public int getRate() {
-        return rate;
+    public Set<RatingItem> getRatingItems() {
+        return ratingItems;
+    }
+
+    public Rating setRatingItems(Set<RatingItem> ratingItems) {
+        this.ratingItems = ratingItems;
+        return this;
     }
 
     public DateTime getDateTime() {
         return dateTime;
     }
 
-    @Override
-    public Rating setPresentationRef(final String presentationRef) {
-        this.presentationRef = presentationRef;
-        return this;
-    }
-
-    public Rating setRate(final int rate) {
-        this.rate = rate;
-        return this;
-    }
-
-    public Rating setDateTime(final DateTime dateTime) {
+    public Rating setDateTime(DateTime dateTime) {
         this.dateTime = dateTime;
         return this;
     }
