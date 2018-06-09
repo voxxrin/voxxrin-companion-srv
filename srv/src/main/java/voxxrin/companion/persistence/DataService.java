@@ -5,7 +5,6 @@ import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import restx.jongo.JongoCollection;
 import voxxrin.companion.domain.technical.Referenceable;
-import voxxrin.companion.domain.technical.Referenceable;
 
 public abstract class DataService<T extends Referenceable> {
 
@@ -58,5 +57,9 @@ public abstract class DataService<T extends Referenceable> {
 
     public void removeCrawledEntities(String eventId) {
         collection.get().remove("{ eventId: # }", eventId);
+    }
+
+    protected final JongoCollection getCollection() {
+        return this.collection;
     }
 }

@@ -1,11 +1,10 @@
 package voxxrin.companion.persistence;
 
 import com.google.common.base.Optional;
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import restx.factory.Component;
 import restx.jongo.JongoCollection;
-import voxxrin.companion.domain.Event;
-import voxxrin.companion.domain.EventTemporality;
 import voxxrin.companion.domain.Event;
 import voxxrin.companion.domain.EventTemporality;
 
@@ -31,5 +30,13 @@ public class EventsDataService extends DataService<Event> {
 
     public Optional<Event> findByAlias(String id) {
         return Optional.fromNullable(find("{ eventId: # }", id));
+    }
+
+    public Optional<Event> updateEventData(ObjectId id, Event event) {
+        return Optional.fromNullable(getCollection().get()
+                .findAndModify("{ _id: # }", id)
+                .with("{ $set: { hashTag: # } }", event.getHashTag())
+                .as(Event.class)
+        );
     }
 }
