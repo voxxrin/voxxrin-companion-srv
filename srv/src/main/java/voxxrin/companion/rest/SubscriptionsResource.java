@@ -1,14 +1,13 @@
 package voxxrin.companion.rest;
 
-import restx.annotations.DELETE;
-import restx.annotations.POST;
-import restx.annotations.Param;
-import restx.annotations.RestxResource;
+import com.google.common.base.Optional;
+import restx.annotations.*;
 import restx.factory.Component;
+import restx.security.PermitAll;
+import voxxrin.companion.auth.AuthModule;
+import voxxrin.companion.domain.EventPresentations;
 import voxxrin.companion.domain.Subscription;
-import voxxrin.companion.persistence.FavoritesService;
-import voxxrin.companion.persistence.RemindersService;
-import voxxrin.companion.domain.Subscription;
+import voxxrin.companion.domain.User;
 import voxxrin.companion.persistence.FavoritesService;
 import voxxrin.companion.persistence.RemindersService;
 
@@ -32,6 +31,16 @@ public class SubscriptionsResource {
     @DELETE("/remindme")
     public Subscription deleteRemindMe(@Param(kind = Param.Kind.QUERY) String presentationId) {
         return remindersService.deleteRemindMe(presentationId);
+    }
+
+    @GET("/favorite")
+    @PermitAll
+    public Iterable<EventPresentations> getFavoritePresentations() {
+        Optional<User> user = AuthModule.currentUser();
+        if (!user.isPresent()) {
+            throw new IllegalStateException("no user found");
+        }
+        return favoritesService.findFavoritedPresentations(user.get());
     }
 
     @POST("/favorite")

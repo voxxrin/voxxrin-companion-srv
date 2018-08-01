@@ -7,20 +7,15 @@ import voxxrin.companion.domain.Event;
 import voxxrin.companion.domain.Presentation;
 import voxxrin.companion.domain.Subscription;
 import voxxrin.companion.domain.User;
-import voxxrin.companion.domain.Event;
-import voxxrin.companion.domain.Presentation;
-import voxxrin.companion.domain.Subscription;
-import voxxrin.companion.domain.User;
 
 import javax.inject.Named;
 
 @Component
 public class RemindersService extends SubscriptionService {
 
-    private final JongoCollection reminders;
-
-    public RemindersService(@Named(Subscription.REMINDERS_COLLECTION) JongoCollection reminders) {
-        this.reminders = reminders;
+    public RemindersService(@Named(Subscription.REMINDERS_COLLECTION) JongoCollection reminders,
+                            @Named(Presentation.COLLECTION) JongoCollection presentations) {
+        super(reminders, presentations);
     }
 
     /**
@@ -28,19 +23,19 @@ public class RemindersService extends SubscriptionService {
      */
 
     public boolean isReminded(User user, Presentation presentation) {
-        return isSubscribed(reminders, user, presentation);
+        return isSubscribed(user, presentation);
     }
 
     public long getRemindersCount(Presentation presentation) {
-        return Iterables.size(getSubscriptions(reminders, presentation));
+        return Iterables.size(getSubscriptions(presentation));
     }
 
     public Iterable<Subscription> getReminders(Presentation presentation) {
-        return getSubscriptions(reminders, presentation);
+        return getSubscriptions(presentation);
     }
 
     public Iterable<Subscription> getReminders(Event event) {
-        return getSubscriptions(reminders, event);
+        return getSubscriptions(event);
     }
 
     /**
@@ -48,10 +43,10 @@ public class RemindersService extends SubscriptionService {
      */
 
     public SubscriptionDbWrite addOrUpdateRemindMe(String presentationId) {
-        return addOrUpdateSubscription(reminders, presentationId);
+        return addOrUpdateSubscription(presentationId);
     }
 
     public Subscription deleteRemindMe(String presentationId) {
-        return deleteSubscription(reminders, presentationId);
+        return deleteSubscription(presentationId);
     }
 }

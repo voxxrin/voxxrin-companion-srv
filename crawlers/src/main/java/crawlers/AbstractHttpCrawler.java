@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import crawlers.configuration.CrawlingConfiguration;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractHttpCrawler {
 
@@ -59,6 +61,11 @@ public abstract class AbstractHttpCrawler {
         int index = 1;
         for (Day day : result.getDays()) {
             day.setExternalId(result.getEvent().getEventId() + "-" + (index++));
+        }
+        for (Presentation presentation : result.getPresentations()) {
+            if (Strings.isNullOrEmpty(presentation.getExternalId())) {
+                presentation.setExternalId(UUID.randomUUID().toString());
+            }
         }
         return result;
     }
