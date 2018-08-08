@@ -3,7 +3,6 @@ package voxxrin.companion.rest;
 import com.google.common.base.Optional;
 import restx.annotations.*;
 import restx.factory.Component;
-import restx.security.PermitAll;
 import voxxrin.companion.auth.AuthModule;
 import voxxrin.companion.domain.EventPresentations;
 import voxxrin.companion.domain.Subscription;
@@ -34,7 +33,6 @@ public class SubscriptionsResource {
     }
 
     @GET("/favorite")
-    @PermitAll
     public Iterable<EventPresentations> getFavoritePresentations() {
         Optional<User> user = AuthModule.currentUser();
         if (!user.isPresent()) {
