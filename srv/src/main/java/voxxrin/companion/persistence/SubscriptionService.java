@@ -1,5 +1,6 @@
 package voxxrin.companion.persistence;
 
+import com.mongodb.BasicDBObject;
 import org.joda.time.DateTime;
 import restx.WebException;
 import restx.http.HttpStatus;
@@ -42,16 +43,9 @@ public abstract class SubscriptionService {
     }
 
     protected Iterable<EventPresentations> findSubscribedPresentations(User user) {
+        BasicDBObject match = new BasicDBObject("$match", new BasicDBObject("from", new BasicDBObject("$gte", DateTime.now().toDate())));
         return presentationCollection.get()
-                .aggregate("{ " +
-                                "   $match: { " +
-                                "       externalId: { $exists: true }, " +
-                                "       eventId: { $exists: true }," +
-                                "       from: { $gte: # } " +
-                                "   } " +
-                                "}",
-                        DateTime.now().toDate()
-                )
+                .aggregate(match.toString())
                 .and("{ " +
                         "   $addFields: { " +
                         "       presentationRef: { $concat: [ '$eventId', ':', '$externalId' ] } " +
