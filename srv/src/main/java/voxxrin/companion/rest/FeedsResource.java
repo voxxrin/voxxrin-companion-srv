@@ -10,9 +10,6 @@ import restx.security.PermitAll;
 import voxxrin.companion.domain.Event;
 import voxxrin.companion.domain.Tweet;
 import voxxrin.companion.persistence.EventsDataService;
-import voxxrin.companion.domain.Event;
-import voxxrin.companion.domain.Tweet;
-import voxxrin.companion.persistence.EventsDataService;
 import voxxrin.companion.services.TwitterFeedService;
 
 import java.util.List;

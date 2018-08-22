@@ -4,14 +4,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 import restx.factory.Component;
 import restx.jongo.JongoCollection;
-import voxxrin.companion.auth.AuthModule;
-import voxxrin.companion.domain.AttachedContent;
-import voxxrin.companion.domain.Presentation;
-import voxxrin.companion.domain.Type;
-import voxxrin.companion.domain.User;
-import voxxrin.companion.domain.technical.ElementURI;
 import voxxrin.companion.auth.AuthModule;
 import voxxrin.companion.domain.AttachedContent;
 import voxxrin.companion.domain.Presentation;
@@ -107,5 +102,10 @@ public class PresentationsDataService extends DataService<Presentation> {
 
     public Iterable<Presentation> search(String eventId, String title) {
         return findAll("{ eventId: #, title: { $regex: #, $options: 'i' } }", eventId, title);
+    }
+
+    public Iterable<Presentation> findNext(int minutes) {
+        DateTime now = DateTime.now();
+        return findAll("{ from: { $gte: #, $lte: # } }", now.toDate(), now.plusMinutes(minutes).toDate());
     }
 }

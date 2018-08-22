@@ -144,6 +144,16 @@
             <artifactId>twitter4j-core</artifactId>
             <version>4.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>6.1.0</version>
+        </dependency>
 
         <!--Test-->
         <dependency>
