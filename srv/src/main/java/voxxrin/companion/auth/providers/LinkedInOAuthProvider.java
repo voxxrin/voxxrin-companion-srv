@@ -15,9 +15,6 @@ import restx.jackson.FrontObjectMapperFactory;
 import voxxrin.companion.auth.OAuthProvider;
 import voxxrin.companion.auth.OAuthSettings;
 import voxxrin.companion.domain.User;
-import voxxrin.companion.auth.OAuthProvider;
-import voxxrin.companion.auth.OAuthSettings;
-import voxxrin.companion.domain.User;
 
 import javax.inject.Named;
 import java.io.IOException;
@@ -76,7 +73,9 @@ public class LinkedInOAuthProvider extends OAuthProvider {
 
         HttpRequest profileRequest = HttpRequest.get(PROFILE_URL)
                 .header("x-li-format", "json")
-                .authorization("Bearer " + accessToken);
+                .authorization("Bearer " + accessToken)
+                .trustAllHosts()
+                .trustAllCerts();
 
         int profileRequestCode = profileRequest.code();
         String profileRequestBody = profileRequest.body();
@@ -111,7 +110,10 @@ public class LinkedInOAuthProvider extends OAuthProvider {
 
     private <T extends Map<String, ?>> String getAccessToken(T params) throws IOException {
 
-        HttpRequest request = HttpRequest.post(LINKEDIN_OAUTH_BASE_URL + "/accessToken")
+        HttpRequest request = HttpRequest
+                .post(LINKEDIN_OAUTH_BASE_URL + "/accessToken")
+                .trustAllHosts()
+                .trustAllCerts()
                 .form(ImmutableMap.builder()
                         .put("grant_type", "authorization_code")
                         .put("code", ((List<String>) params.get("code")).get(0))
