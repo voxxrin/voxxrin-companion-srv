@@ -66,7 +66,7 @@ public abstract class DevoxxCFPCrawler extends AbstractHttpCrawler {
         return crawlingResult;
     }
 
-    private HttpRequest httpGet(String url, CrawlingConfiguration configuration) {
+    protected HttpRequest httpGet(String url, CrawlingConfiguration configuration) {
         return HttpRequest.get(configuration.isForceHttps() && !url.contains("https://") ? url.replaceAll("http", "https") : url)
                 .trustAllCerts()
                 .trustAllHosts();
@@ -254,12 +254,14 @@ public abstract class DevoxxCFPCrawler extends AbstractHttpCrawler {
         public Day toStdDay(Event event) {
             Reference<Event> eventRef = Reference.of(Type.event, event.getKey());
             CFPSlot slot = Iterables.getFirst(slots, null);
-            String name = "";
+            Day day = (Day) new Day().setEvent(eventRef).setKey(new ObjectId().toString());
             if (slot != null) {
                 DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
-                name = fmt.print(new DateTime(slot.fromTimeMillis));
+                DateTime date = new DateTime(slot.fromTimeMillis);
+                day.setName(fmt.print(date));
+                day.setDate(date);
             }
-            return (Day) new Day().setEvent(eventRef).setName(name).setKey(new ObjectId().toString());
+            return day;
         }
     }
 

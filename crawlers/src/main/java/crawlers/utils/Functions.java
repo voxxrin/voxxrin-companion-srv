@@ -2,6 +2,9 @@ package crawlers.utils;
 
 import com.google.common.base.Function;
 import crawlers.AbstractHttpCrawler;
+import voxxrin.companion.domain.Type;
+import voxxrin.companion.domain.technical.Reference;
+import voxxrin.companion.domain.technical.Referenceable;
 
 public class Functions {
 
@@ -11,4 +14,13 @@ public class Functions {
             return input.getId();
         }
     };
+
+    public static <T extends Referenceable> Function<T, Reference<T>> REFERENCER(final Type type) {
+        return new Function<T, Reference<T>>() {
+            @Override
+            public Reference<T> apply(T input) {
+                return Reference.of(type, input.getKey());
+            }
+        };
+    }
 }
