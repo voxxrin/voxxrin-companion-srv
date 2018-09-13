@@ -94,7 +94,7 @@ public abstract class DevoxxCFPTalksCrawler extends DevoxxCFPCrawler {
                                 .setKind(cfpTalk.talkType)
                                 .setExternalId(cfpTalk.id)
                                 .setTitle(cfpTalk.title)
-                                .setSummary(cfpTalk.summary)
+                                .setSummary(cfpTalk.summaryAsHtml != null ? cfpTalk.summaryAsHtml : cfpTalk.summary)
                                 .setSpeakers(talkSpeakers)
                                 .setFrom(from)
                                 .setTo(to)

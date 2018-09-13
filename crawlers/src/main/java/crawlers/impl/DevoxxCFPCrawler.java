@@ -292,6 +292,7 @@ public abstract class DevoxxCFPCrawler extends AbstractHttpCrawler {
     protected static class CFPTalk {
         public String title;
         public String summary;
+        public String summaryAsHtml;
         public String talkType;
         public String id;
         public List<CFPTalkSpeaker> speakers;
