@@ -32,4 +32,10 @@ public interface OAuthSettings {
 
     @SettingsKey(key = "oauth.facebook.appSecret")
     String oauthFacebookAppSecret();
+
+    @SettingsKey(key = "oauth.github.appId")
+    String oauthGithubAppId();
+
+    @SettingsKey(key = "oauth.github.appSecret")
+    String oauthGithubAppSecret();
 }
