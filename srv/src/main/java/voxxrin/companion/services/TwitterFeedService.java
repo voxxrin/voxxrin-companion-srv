@@ -10,9 +10,6 @@ import twitter4j.conf.ConfigurationBuilder;
 import voxxrin.companion.auth.OAuthSettings;
 import voxxrin.companion.domain.Event;
 import voxxrin.companion.domain.Tweet;
-import voxxrin.companion.auth.OAuthSettings;
-import voxxrin.companion.domain.Event;
-import voxxrin.companion.domain.Tweet;
 
 import java.util.List;
 
@@ -44,7 +41,7 @@ public class TwitterFeedService {
         return new Function<Event, List<Tweet>>() {
             @Override
             public List<Tweet> apply(Event event) {
-                Query query = new Query(event.getHashTag());
+                Query query = new Query(event.getLinks().getHashTag());
                 query.setCount(50);
                 try {
                     QueryResult result = twitter.search(query);

@@ -35,7 +35,7 @@ public class EventsDataService extends DataService<Event> {
     public Optional<Event> updateEventData(ObjectId id, Event event) {
         return Optional.fromNullable(getCollection().get()
                 .findAndModify("{ _id: # }", id)
-                .with("{ $set: { hashTag: # } }", event.getHashTag())
+                .with("{ $set: { links: # } }", event.getLinks())
                 .as(Event.class)
         );
     }

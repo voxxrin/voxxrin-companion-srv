@@ -21,7 +21,7 @@ public class Event extends Referenceable {
 
     private String imageUrl;
 
-    private String hashTag;
+    private EventLinks links = new EventLinks();
 
     public String getEventId() {
         return eventId;
@@ -86,12 +86,12 @@ public class Event extends Referenceable {
         return this;
     }
 
-    public String getHashTag() {
-        return hashTag;
+    public EventLinks getLinks() {
+        return links;
     }
 
-    public Event setHashTag(String hashTag) {
-        this.hashTag = hashTag;
+    public Event setLinks(EventLinks links) {
+        this.links = links;
         return this;
     }
 }
