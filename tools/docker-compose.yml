@@ -72,7 +72,7 @@ swagger:
   ports:
   - "8002:80"
   environment:
-  - API_URL=http://appv2.voxxr.in/api/public/
+  - API_URL=http://appv3.voxxr.in/api/public/
 
 swagger-test:
   image: schickling/swagger-ui
