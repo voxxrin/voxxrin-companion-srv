@@ -1,0 +1,84 @@
+voxxrin_app:
+  image: tomcat
+  container_name: voxxrin-app
+  ports:
+  - "8000:8080"
+  links:
+  - mongodb
+  volumes:
+  - /data/app/deploys/voxxrin/:/usr/local/tomcat/webapps/
+  - /data/app/config/voxxrin_env.sh:/usr/local/tomcat/bin/setenv.sh
+  - /data/log/voxxrin:/usr/local/tomcat/logs/:rw
+
+voxxrin-test_app:
+  image: tomcat
+  container_name: voxxrin-test-app
+  ports:
+  - "8100:8080"
+  links:
+  - mongodb-test
+  volumes:
+  - /data/app/deploys/voxxrin-test/:/usr/local/tomcat/webapps/
+  - /data/app/config/voxxrin-test_env.sh:/usr/local/tomcat/bin/setenv.sh
+  - /data/log/voxxrin-test:/usr/local/tomcat/logs/:rw
+
+voxxrin_crawlers:
+  image: tomcat
+  container_name: voxxrin-crawlers
+  ports:
+  - "8001:8080"
+  links:
+  - voxxrin_app
+  - mongodb
+  volumes:
+  - /data/app/deploys/crawlers/:/usr/local/tomcat/webapps/
+  - /data/app/config/crawlers_env.sh:/usr/local/tomcat/bin/setenv.sh
+  - /data/log/crawlers:/usr/local/tomcat/logs/:rw
+
+voxxrin-test_crawlers:
+  image: tomcat
+  container_name: voxxrin-test-crawlers
+  ports:
+  - "8101:8080"
+  links:
+  - "voxxrin-test_app:voxxrin_app"
+  - "mongodb-test:mongodb"
+  volumes:
+  - /data/app/deploys/crawlers-test/:/usr/local/tomcat/webapps/
+  - /data/app/config/crawlers-test_env.sh:/usr/local/tomcat/bin/setenv.sh
+  - /data/log/crawlers-test:/usr/local/tomcat/logs/:rw
+
+mongodb:
+  image: mongo
+  container_name: mongo
+  ports:
+  - "127.0.0.1:27017:27017"
+  volumes:
+  - /data/db/prod:/data/db:rw
+  command: --auth --storageEngine=wiredTiger
+
+mongodb-test:
+  image: mongo:3.4
+  container_name: mongo-test
+  ports:
+  - "127.0.0.1:27018:27017"
+  volumes:
+  - /data/db/test:/data/db:rw
+  command: --auth --storageEngine=wiredTiger
+
+swagger:
+  image: schickling/swagger-ui
+  container_name: swagger
+  ports:
+  - "8002:80"
+  environment:
+  - API_URL=http://appv2.voxxr.in/api/public/
+
+swagger-test:
+  image: schickling/swagger-ui
+  container_name: swaggger-test
+  ports:
+  - "8102:80"
+  environment:
+  - API_URL=http://appv3-test.voxxr.in/api/public/
+
