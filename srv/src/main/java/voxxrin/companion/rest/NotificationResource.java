@@ -3,6 +3,7 @@ package voxxrin.companion.rest;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
+import org.slf4j.Logger;
 import restx.annotations.PUT;
 import restx.annotations.Param;
 import restx.annotations.RestxResource;
@@ -12,9 +13,13 @@ import voxxrin.companion.domain.Presentation;
 import voxxrin.companion.persistence.PresentationsDataService;
 import voxxrin.companion.services.PushService;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
 @RestxResource("/notification")
 public class NotificationResource {
+
+    private static final Logger logger = getLogger(NotificationResource.class);
 
     private final PresentationsDataService presentationsDataService;
     private final PushService pushService;
@@ -31,6 +36,7 @@ public class NotificationResource {
                 .from(findNextPresentations(allFuture))
                 .toSet();
         for (Presentation presentation : presentations) {
+            logger.info("talk {} - publishing beginning", presentation.getExternalId());
             pushService.publishTalkBeginning(presentation);
         }
     }
