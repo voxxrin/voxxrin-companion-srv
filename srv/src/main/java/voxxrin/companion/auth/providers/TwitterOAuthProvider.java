@@ -19,9 +19,6 @@ import restx.jackson.FrontObjectMapperFactory;
 import voxxrin.companion.auth.OAuthProvider;
 import voxxrin.companion.auth.OAuthSettings;
 import voxxrin.companion.domain.User;
-import voxxrin.companion.auth.OAuthProvider;
-import voxxrin.companion.auth.OAuthSettings;
-import voxxrin.companion.domain.User;
 
 import javax.inject.Named;
 import java.io.IOException;
@@ -83,7 +80,7 @@ public class TwitterOAuthProvider extends OAuthProvider {
                 .setProviderInfo(providerInfo)
                 .setDisplayName(providerInfo.get("name"))
                 .setAvatarUrl(providerInfo.get("profile_image_url_https"))
-                .setLogin(providerInfo.get("screen_name"))
+                .setLogin("twitter:" + providerInfo.get("screen_name"))
                 .setTwitterId(providerInfo.get("screen_name"))
                 .setId(new ObjectId().toString());
 
