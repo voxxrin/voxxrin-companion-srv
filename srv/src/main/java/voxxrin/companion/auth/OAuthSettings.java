@@ -38,4 +38,10 @@ public interface OAuthSettings {
 
     @SettingsKey(key = "oauth.github.appSecret")
     String oauthGithubAppSecret();
+
+    @SettingsKey(key = "oauth.google.appId")
+    String oauthGoogleAppId();
+
+    @SettingsKey(key = "oauth.google.appSecret")
+    String oauthGoogleAppSecret();
 }

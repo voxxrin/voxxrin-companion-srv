@@ -16,11 +16,11 @@ import static voxxrin.companion.utils.PresentationRef.buildPresentationBusinessR
 public class PushService {
 
     private static final Logger logger = getLogger(PushService.class);
-    private final FirebaseMessaging firebaseMessaging;
+    private FirebaseMessaging firebaseMessaging;
 
-    public PushService(FirebaseMessaging firebaseMessaging) {
-        this.firebaseMessaging = firebaseMessaging;
-    }
+//    public PushService(FirebaseMessaging firebaseMessaging) {
+//        this.firebaseMessaging = firebaseMessaging;
+//    }
 
     private String buildTalkBeginningTopicName(String presentationRef) {
         return String.format("presentation.%s.beginning", presentationRef.replaceAll("[:/]", "_"));

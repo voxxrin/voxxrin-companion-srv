@@ -46,9 +46,7 @@ public class GithubOAuthProvider extends OAuthProvider {
         this.appKey = oAuthSettings.oauthGithubAppId();
         this.appSecret = oAuthSettings.oauthGithubAppSecret();
         this.mapper = mapper;
-        logger.info("Registered Github provider - key = {}, secret = {}, callback = {}",
-                oAuthSettings.oauthGithubAppId(), oAuthSettings.oauthGithubAppSecret(),
-                serverUrl + "/api/auth/provider/github");
+        logger.info("Registered Github provider - key = {}, secret = {}, callback = {}", appKey, appSecret, serverUrl + API_CALLBACK_URL);
     }
 
     @Override
