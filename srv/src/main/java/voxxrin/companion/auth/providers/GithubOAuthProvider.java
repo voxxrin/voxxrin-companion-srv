@@ -76,7 +76,7 @@ public class GithubOAuthProvider extends OAuthProvider {
         Map<String, Object> providerInfo = mapper.readValue(profileBody, buildStringParamsMapType());
 
         String login = (String) providerInfo.get("login");
-        String displayName = (String) providerInfo.get("name");
+        String displayName = Optional.fromNullable((String) providerInfo.get("name")).or(login);
         String emailAddress = (String) providerInfo.get("email");
         String pictureUrl = (String) providerInfo.get("avatar_url");
 
