@@ -11,18 +11,18 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.base.Optional;
 import org.jongo.marshall.jackson.oid.ObjectIdDeserializer;
 import org.jongo.marshall.jackson.oid.ObjectIdSerializer;
 import org.slf4j.Logger;
 import restx.factory.Component;
 import restx.jackson.FixedPrecisionDeserializer;
 import restx.jackson.FixedPrecisionSerializer;
-import voxxrin.companion.domain.Day;
-import voxxrin.companion.domain.Presentation;
-import voxxrin.companion.domain.Room;
-import voxxrin.companion.domain.Speaker;
+import voxxrin.companion.domain.*;
 import voxxrin.companion.domain.technical.Referenceable;
 import voxxrin.companion.serialization.ReferenceSerializer;
+
+import java.io.IOException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -50,6 +50,10 @@ public class HttpDataFiller {
     public void fill(CrawlingResult result) throws JsonProcessingException {
 
         String eventId = result.getEvent().getEventId();
+        Optional<Event> existingEvent = fetchExistingEventData(eventId);
+        if (existingEvent.isPresent()) {
+            fillCrawledEventWithExistingData(result.getEvent(), existingEvent.get());
+        }
 
         clearExistingData(eventId);
 
@@ -70,6 +74,23 @@ public class HttpDataFiller {
         for (Presentation presentation : result.getPresentations()) {
             send(PRESENTATIONS_URL, presentation, eventId);
         }
+    }
+
+    private Optional<Event> fetchExistingEventData(String eventId) {
+        String url = String.format("%s/events/%s", voxxrinBaseUrl, eventId);
+        try {
+            HttpRequest request = HttpRequest.get(url);
+            if (request.code() == 200) {
+                return Optional.of(mapper.readValue(request.body(), Event.class));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.absent();
+    }
+
+    private void fillCrawledEventWithExistingData(Event event, Event existingEvent) {
+        event.setLinks(existingEvent.getLinks());
     }
 
     private void clearExistingData(String eventId) {
