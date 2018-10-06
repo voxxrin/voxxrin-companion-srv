@@ -36,6 +36,8 @@ public class Presentation extends Referenceable implements Favoritable, Remindab
 
     private String kind;
 
+    private String track;
+
     private String externalId;
 
     /**
@@ -90,6 +92,10 @@ public class Presentation extends Referenceable implements Favoritable, Remindab
 
     public List<AttachedContent> getReleasedContents() {
         return releasedContents;
+    }
+
+    public String getTrack() {
+        return track;
     }
 
     public Presentation setKind(final String kind) {
@@ -191,6 +197,11 @@ public class Presentation extends Referenceable implements Favoritable, Remindab
 
     public Presentation setReleasedContents(final List<AttachedContent> releasedContents) {
         this.releasedContents = releasedContents;
+        return this;
+    }
+
+    public Presentation setTrack(String track) {
+        this.track = track;
         return this;
     }
 

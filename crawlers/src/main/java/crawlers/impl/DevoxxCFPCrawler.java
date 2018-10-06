@@ -284,6 +284,7 @@ public abstract class DevoxxCFPCrawler extends AbstractHttpCrawler {
                     .setTo(new DateTime(toTimeMillis))
                     .setExternalId(talk != null ? talk.id : null)
                     .setKind(talk != null ? talk.talkType : null)
+                    .setTrack(talk != null ? talk.track : null)
                     .setSummary(talk != null ? talk.summary : null)
                     .setTitle(talk != null ? talk.title : justABreak.nameFR);
         }
@@ -294,6 +295,7 @@ public abstract class DevoxxCFPCrawler extends AbstractHttpCrawler {
         public String summary;
         public String summaryAsHtml;
         public String talkType;
+        public String track;
         public String id;
         public List<CFPTalkSpeaker> speakers;
     }
