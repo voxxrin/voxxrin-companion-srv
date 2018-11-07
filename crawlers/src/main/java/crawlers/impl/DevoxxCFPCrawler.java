@@ -285,7 +285,7 @@ public abstract class DevoxxCFPCrawler extends AbstractHttpCrawler {
                     .setExternalId(talk != null ? talk.id : null)
                     .setKind(talk != null ? talk.talkType : null)
                     .setTrack(talk != null ? talk.track : null)
-                    .setSummary(talk != null ? talk.summary : null)
+                    .setSummary(talk != null ? talk.summaryAsHtml : null)
                     .setTitle(talk != null ? talk.title : justABreak.nameFR);
         }
     }
