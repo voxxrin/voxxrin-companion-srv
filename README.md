@@ -4,7 +4,7 @@ Your conference companion !
 
 It's licensed under the very commercial friendly Apache License 2.
 
-You can get more details from the web site at http://voxxr.in/
+You can get more details from the web site at http://www.voxxr.in/
 
 ## Main features
 
