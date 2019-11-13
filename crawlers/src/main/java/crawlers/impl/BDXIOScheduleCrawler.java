@@ -57,11 +57,7 @@ public class BDXIOScheduleCrawler extends AbstractHttpCrawler {
         Reference<Day> dayRef = Reference.of(Type.day, day.getKey());
         List<Presentation> presentations = new ArrayList<>();
         for (ScheduleSession session : schedule.sessions.values()) {
-            List<Reference<Speaker>> speakerRefs = new ArrayList<>();
-            for (Integer speakerId : session.speakers) {
-                Reference<Speaker> speakerRef = Reference.of(Type.speaker, speakers.get(speakerId).getKey());
-                speakerRefs.add(speakerRef);
-            }
+            List<Reference<Speaker>> speakerRefs = getPresentationSpeakers(speakers, session);
             Reference<Room> roomRef = Reference.of(Type.room, rooms.get(session.trackTitle).getKey());
             presentations.add(
                     (Presentation) new Presentation()
@@ -70,8 +66,9 @@ public class BDXIOScheduleCrawler extends AbstractHttpCrawler {
                             .setEvent(day.getEvent())
                             .setLocation(roomRef)
                             .setDay(dayRef)
-                            .setFrom(session.startTime)
-                            .setTo(session.endTime)
+                            // uggly  ...
+                            .setFrom(session.startTime.minusHours(1))
+                            .setTo(session.endTime.minusHours(1))
                             .setSpeakers(speakerRefs)
                             .setExternalId(String.valueOf(session.id))
                             .setKey(new ObjectId().toString())
@@ -79,6 +76,28 @@ public class BDXIOScheduleCrawler extends AbstractHttpCrawler {
             );
         }
         return presentations;
+    }
+
+    private List<Reference<Speaker>> getPresentationSpeakers(Map<Integer, Speaker> speakers, ScheduleSession session) {
+        List<Speaker> speakersList = new ArrayList<>();
+        for (Integer speakerId : session.speakers) {
+            Speaker speaker = speakers.get(speakerId);
+            speakersList.add(speaker);
+        }
+        Collections.sort(speakersList, new Comparator<Speaker>() {
+            @Override
+            public int compare(Speaker o1, Speaker o2) {
+                String[] o1Names = o1.getName().split("\\s");
+                String[] o2Names = o2.getName().split("\\s");
+                return o1Names[o1Names.length - 1].compareTo(o2Names[o2Names.length - 1]);
+            }
+        });
+        List<Reference<Speaker>> speakerRefs = new ArrayList<>();
+        for (Speaker speaker : speakersList) {
+            Reference<Speaker> speakerRef = Reference.of(Type.speaker, speaker.getKey());
+            speakerRefs.add(speakerRef);
+        }
+        return speakerRefs;
     }
 
     private Event createEvent(CrawlingConfiguration configuration, DateTime from, DateTime to) {
